@@ -1,4 +1,14 @@
-<?php require 'header.php'; ?>
+<?php
+require 'header.php';
+require 'bdd.php';
+if (isset($_GET['statut'])) {
+    if ($_GET['statut'] == 0) {
+        echo "⚠️ Une erreur est survenue lors de l'ajout de l'œuvre dans la base de données.";
+    } else {
+        echo "✅ L'œuvre d'art a été correctement enregistrée dans la base de données.";
+    }
+}
+?>
 
 <form action="traitement.php" method="POST">
     <div class="champ-formulaire">
