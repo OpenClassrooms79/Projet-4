@@ -1,27 +1,21 @@
 <?php
-    require 'header.php';
-    require 'oeuvres.php';
+require 'header.php';
+require 'bdd.php';
 
-    // Si l'URL ne contient pas d'id, on redirige sur la page d'accueil
-    if(empty($_GET['id'])) {
-        header('Location: index.php');
-    }
+// Si l'URL ne contient pas d'id, on redirige sur la page d'accueil
+if (empty($_GET['id'])) {
+    header('Location: index.php');
+}
+$id = (int) $_GET['id'];
 
-    $oeuvre = null;
+$mysql = connexion();
+$res = $mysql->prepare('SELECT * FROM oeuvres WHERE id = :id')->execute(['id' => $id]);
+$oeuvre = $res->fetch(PDO::FETCH_ASSOC);
 
-    // On parcourt les oeuvres du tableau afin de rechercher celle qui a l'id précisé dans l'URL
-    foreach($oeuvres as $o) {
-        // intval permet de transformer l'id de l'URL en un nombre (exemple : "2" devient 2)
-        if($o['id'] === intval($_GET['id'])) {
-            $oeuvre = $o;
-            break; // On stoppe le foreach si on a trouvé l'oeuvre
-        }
-    }
-
-    // Si aucune oeuvre trouvé, on redirige vers la page d'accueil
-    if(is_null($oeuvre)) {
-        header('Location: index.php');
-    }
+// Si aucune oeuvre trouvée, on redirige vers la page d'accueil
+if ($oeuvre === false) {
+    header('Location: index.php');
+}
 ?>
 
 <article id="detail-oeuvre">
@@ -32,7 +26,7 @@
         <h1><?= $oeuvre['titre'] ?></h1>
         <p class="description"><?= $oeuvre['artiste'] ?></p>
         <p class="description-complete">
-             <?= $oeuvre['description'] ?>
+            <?= $oeuvre['description'] ?>
         </p>
     </div>
 </article>
